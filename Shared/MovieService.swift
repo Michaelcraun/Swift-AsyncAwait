@@ -11,14 +11,6 @@ import UIKit
 class MovieService {
     
     private let root: String = "https://imdb8.p.rapidapi.com/title/find"
-    private var request: URLRequest {
-        guard let url = URL(string: "\(root)?q=game+of+thr") else { fatalError() }
-        var request = URLRequest(url: url)
-        request.addValue("f4416e782dmsha78fe83ba200131p18beeajsnd80827d4325b", forHTTPHeaderField: "x-rapidapi-key")
-        request.addValue("imdb8.p.rapidapi.com", forHTTPHeaderField: "x-rapidapi-host")
-        request.httpMethod = "GET"
-        return request
-    }
     
     private func buildRequest(with parameters: [(key: String, value: String)]) -> URLRequest {
         
