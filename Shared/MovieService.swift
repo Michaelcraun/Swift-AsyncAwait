@@ -20,14 +20,30 @@ class MovieService {
         return request
     }
     
-    func getMovie() async -> Result<[Movie],Error> {
+    private func buildRequest(with parameters: [(key: String, value: String)]) -> URLRequest {
+        
+        precondition(!parameters.isEmpty)
+        
+        var urlString = "\(root)?"
+        parameters.forEach { urlString += "\($0.key)=\($0.value)" }
+        
+        guard let url = URL(string: urlString) else { fatalError() }
+        var request = URLRequest(url: url)
+        request.addValue("f4416e782dmsha78fe83ba200131p18beeajsnd80827d4325b", forHTTPHeaderField: "x-rapidapi-key")
+        request.addValue("imdb8.p.rapidapi.com", forHTTPHeaderField: "x-rapidapi-host")
+        request.httpMethod = "GET"
+        return request
+        
+    }
+    
+    func search(query: String) async -> Result<[Movie],Error> {
         
         do {
-            let (data, _) = try await URLSession.shared.data(for: request)
-            let json = try JSONSerialization.jsonObject(with: data, options: .fragmentsAllowed) as! [String : Any]
-            let fetched = try JSONSerialization.data(withJSONObject: json["results"] as! [[String : Any]], options: .fragmentsAllowed)
-            let results = try JSONDecoder().decode([Movie].self, from: fetched)
-            return .success(results)
+            let request = buildRequest(with: [(key: "q", value: query)])
+            let (data, response) = try await URLSession.shared.data(for: request)
+            if let status = (response as? HTTPURLResponse)?.statusCode, status < 200 || status > 200 { fatalError() }
+            let result = try JSONDecoder().decode(MovieResult.self, from: data)
+            return .success(result.results)
         } catch {
             print(error)
             return .failure(error)
@@ -35,30 +51,50 @@ class MovieService {
         
     }
     
-    func getPosters(from movies: [Movie]) async -> Result<[MovieViewModel], Error> {
+    func getPoster(for movie: Movie) async -> Result<MovieViewModel,Error> {
         
-        var models: [MovieViewModel] = []
-        
-        for movie in movies {
-            guard let posterURL = movie.image?.url, let url = URL(string: posterURL) else { continue }
+        if let posterURL = movie.image?.url, let url = URL(string: posterURL) {
             do {
-                let (data, _) = try await URLSession.shared.data(from: url)
+                let (data, response) = try await URLSession.shared.data(from: url)
+                if let status = (response as? HTTPURLResponse)?.statusCode, status < 200 || status > 200 { fatalError() }
                 let image = UIImage(data: data)
-                let model = MovieViewModel.init(movie: movie)
-                model.image = image
-                models.append(model)
+                let model = MovieViewModel(movie: movie, image: image ?? UIImage(systemName: "questionmark.circle.fill")!)
+                return .success(model)
             } catch {
                 print(error)
+                return .failure(error)
+            }
+        } else {
+            let model = MovieViewModel(movie: movie, image: UIImage(systemName: "questionmark.circle.fill")!)
+            return .success(model)
+        }
+        
+    }
+    
+    func getPosters(from movies: [Movie]) async -> Result<[MovieViewModel], Error> {
+
+        var models: [MovieViewModel] = []
+
+        for movie in movies {
+            if let model = try? await getPoster(for: movie).get() {
+                models.append(model)
             }
         }
-        return .success(models)
         
+        return .success(models)
+
     }
     
 }
 
 enum MovieError: Error {
     case badURL
+}
+
+struct MovieResult: Decodable {
+    
+    let results: [Movie]
+    
 }
 
 struct Movie: Decodable {
@@ -83,9 +119,10 @@ class MovieViewModel {
     var imageURL: String? { movie.image?.url }
     var title: String { movie.title }
     var year: Int { movie.year }
-    var image: UIImage?
+    var image: UIImage
     
-    init(movie: Movie) {
+    init(movie: Movie, image: UIImage = UIImage()) {
+        self.image = image
         self.movie = movie
     }
     

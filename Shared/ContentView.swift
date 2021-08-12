@@ -18,29 +18,63 @@ struct ContentView: View {
             
             HStack {
                 
-                Image(uiImage: movie.image!)
+                Image(uiImage: movie.image)
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100)
                 
                 VStack {
                     
-                    Text(movie.title)
+                    HStack {
+                     
+                        Text(movie.title)
+                            .font(.headline)
+                            .multilineTextAlignment(.leading)
+                            .lineLimit(2)
+                        
+                        Spacer()
+                        
+                    }
                     
-                    Text("\(movie.year)")
+                    HStack {
+                        
+                        Text("\(movie.year)")
+                            .font(.caption)
+                        
+                        Spacer()
+                        
+                    }
                     
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
             
         }
+        .refreshable {
+            await updateMovieList()
+        }
         .task {
-            let getMovies = await MovieService().getMovie()
-            let models = await MovieService().getPosters(from: try! getMovies.get())
-            self.movies = try! models.get()
-            print(self.movies.count)
+            await updateMovieList()
         }
         
+    }
+    
+    private func updateMovieList() async {
+        print(#"Fetching movie list for "game of thr"..."#)
+        let searchResults = try? await MovieService().search(query: "game+of+thr").get()
+        print("Movie list fetched! Fetching posters...")
+        for searchResult in (searchResults ?? []) {
+            if let modelResult = try? await MovieService().getPoster(for: searchResult).get() {
+                print("Poster fetched for \(modelResult.id)...")
+                if !movies.contains(where: { $0.id == modelResult.id }) {
+                    movies.append(modelResult)
+                    print("Posters for \(movies.count) movies fetched so far...")
+                }
+            }
+        }
+        print("Finished fetching posters. Enjoy!")
     }
     
 }
