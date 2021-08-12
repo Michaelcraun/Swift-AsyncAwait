@@ -8,6 +8,7 @@
 import SwiftUI
 
 @main
+@available(macOS 12.0, *)
 struct AsyncAwaitApp: App {
     var body: some Scene {
         WindowGroup {
