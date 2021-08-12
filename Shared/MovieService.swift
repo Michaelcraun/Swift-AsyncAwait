@@ -7,7 +7,6 @@
 
 import UIKit
 
-@available(macOS 12.0, *)
 class MovieService {
     
     private let root: String = "https://imdb8.p.rapidapi.com/title/find"
@@ -79,43 +78,3 @@ class MovieService {
     
 }
 
-enum MovieError: Error {
-    case badURL
-}
-
-struct MovieResult: Decodable {
-    
-    let results: [Movie]
-    
-}
-
-struct Movie: Decodable {
-    
-    let id: String
-    let image: MovieImage?
-    let title: String
-    let year: Int
-    
-}
-
-struct MovieImage: Decodable {
-    
-    let url: String
-    
-}
-
-class MovieViewModel {
-    
-    let movie: Movie
-    var id: String { movie.id }
-    var imageURL: String? { movie.image?.url }
-    var title: String { movie.title }
-    var year: Int { movie.year }
-    var image: UIImage
-    
-    init(movie: Movie, image: UIImage = UIImage()) {
-        self.image = image
-        self.movie = movie
-    }
-    
-}

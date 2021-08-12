@@ -17,6 +17,8 @@
 		9B41339C26C3FDB3008D8FC8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9B41337726C3FDB3008D8FC8 /* Assets.xcassets */; };
 		9B4133AF26C4007F008D8FC8 /* MovieService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4133AE26C4007F008D8FC8 /* MovieService.swift */; };
 		9B4133B026C4007F008D8FC8 /* MovieService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4133AE26C4007F008D8FC8 /* MovieService.swift */; };
+		9B4C734626C55C3100CF3BDF /* MovieViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4C734526C55C3100CF3BDF /* MovieViewModels.swift */; };
+		9B4C734726C55C3100CF3BDF /* MovieViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B4C734526C55C3100CF3BDF /* MovieViewModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +50,7 @@
 		9B41339526C3FDB3008D8FC8 /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		9B4133AE26C4007F008D8FC8 /* MovieService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieService.swift; sourceTree = "<group>"; };
 		9B4133B126C4066C008D8FC8 /* AsyncAwait.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AsyncAwait.entitlements; sourceTree = "<group>"; };
+		9B4C734526C55C3100CF3BDF /* MovieViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovieViewModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +103,7 @@
 				9B41337626C3FDB1008D8FC8 /* ContentView.swift */,
 				9B4133AE26C4007F008D8FC8 /* MovieService.swift */,
 				9B41337726C3FDB3008D8FC8 /* Assets.xcassets */,
+				9B4C734526C55C3100CF3BDF /* MovieViewModels.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -292,6 +296,7 @@
 				9B4133AF26C4007F008D8FC8 /* MovieService.swift in Sources */,
 				9B41339926C3FDB3008D8FC8 /* ContentView.swift in Sources */,
 				9B41339726C3FDB3008D8FC8 /* AsyncAwaitApp.swift in Sources */,
+				9B4C734626C55C3100CF3BDF /* MovieViewModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -302,6 +307,7 @@
 				9B4133B026C4007F008D8FC8 /* MovieService.swift in Sources */,
 				9B41339A26C3FDB3008D8FC8 /* ContentView.swift in Sources */,
 				9B41339826C3FDB3008D8FC8 /* AsyncAwaitApp.swift in Sources */,
+				9B4C734726C55C3100CF3BDF /* MovieViewModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

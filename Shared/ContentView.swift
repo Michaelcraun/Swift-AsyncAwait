@@ -7,14 +7,14 @@
 
 import SwiftUI
 
-@available(macOS 12.0, *)
 struct ContentView: View {
     
-    @State private var movies: [MovieViewModel] = []
+    // MainActor objects MUST be declared as StateObject's
+    @StateObject private var viewModel = MovieListViewModel()
     
     var body: some View {
         
-        List(movies, id: \.id) { movie in
+        List(viewModel.movies, id: \.id) { movie in
             
             HStack {
                 
@@ -53,33 +53,16 @@ struct ContentView: View {
             
         }
         .refreshable {
-            await updateMovieList()
+            await viewModel.getMovies()
         }
         .task {
-            await updateMovieList()
+            await viewModel.getMovies()
         }
         
     }
     
-    private func updateMovieList() async {
-        print(#"Fetching movie list for "game of thr"..."#)
-        let searchResults = try? await MovieService().search(query: "game+of+thr").get()
-        print("Movie list fetched! Fetching posters...")
-        for searchResult in (searchResults ?? []) {
-            if let modelResult = try? await MovieService().getPoster(for: searchResult).get() {
-                print("Poster fetched for \(modelResult.id)...")
-                if !movies.contains(where: { $0.id == modelResult.id }) {
-                    movies.append(modelResult)
-                    print("Posters for \(movies.count) movies fetched so far...")
-                }
-            }
-        }
-        print("Finished fetching posters. Enjoy!")
-    }
-    
 }
 
-@available(macOS 12.0, *)
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
